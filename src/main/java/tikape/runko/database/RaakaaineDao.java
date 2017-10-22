@@ -83,21 +83,17 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
             throw new java.lang.RuntimeException("Ei voi luoda raaka-ainetta jolla ei ole nimeä!");
         }
         
-        if (aine.getId() == null) {
-            return save(aine);
-        } else {
-            return update(aine);
+        Raakaaine haettu = findByName(aine.getNimi());
+        
+        if (haettu != null) {
+            return haettu;
         }
-    }
-    
-    private Raakaaine save(Raakaaine aine) throws SQLException {
-
+        
         Connection conn = database.getConnection();
         PreparedStatement stmt = conn.prepareStatement("INSERT INTO RaakaAine"
                 + " (nimi)"
                 + " VALUES (?)");
         stmt.setString(1, aine.getNimi());
-
         stmt.executeUpdate();
           
         try (ResultSet rs = stmt.getGeneratedKeys()) {
@@ -111,23 +107,22 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
                 throw new SQLException("Ei saatu avainta!");
             }
         }
-
-    }
-
-    private Raakaaine update(Raakaaine aine) throws SQLException {
-
-        Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("UPDATE RaakaAine SET"
-                + " nimi = ?WHERE id = ?");
-        stmt.setString(1, aine.getNimi());
-        stmt.setInt(2, aine.getId());
-
-        stmt.executeUpdate();
-
-        stmt.close();
-        conn.close();
-
-        return aine;
-    }
         
+    }
+    
+
+    private Raakaaine findByName(String name) throws SQLException {
+        try (Connection conn = database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Raakaaine WHERE nimi = ?");
+            stmt.setString(1, name);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) {
+                    return null;
+                }
+
+                return new Raakaaine(0, "");
+            }
+        }
+    }
 }

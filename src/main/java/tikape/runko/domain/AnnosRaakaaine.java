@@ -65,5 +65,5 @@ public class AnnosRaakaaine {
     public void setRaakaaine_id(Integer raakaaine_id) {
         this.raakaaine_id = raakaaine_id;
     }
-    
+   
 }

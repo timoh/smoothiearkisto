@@ -9,7 +9,10 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine;
 import tikape.runko.database.Database;
 import tikape.runko.database.RaakaaineDao;
 import tikape.runko.database.AnnosDao;
+import tikape.runko.database.AnnosRaakaaineDao;
 import tikape.runko.domain.Annos;
+import tikape.runko.domain.AnnosRaakaaine;
+import tikape.runko.domain.Raakaaine;
 
 public class Main {
 
@@ -19,6 +22,7 @@ public class Main {
 
         RaakaaineDao raakaaineDao = new RaakaaineDao(database);
         AnnosDao annosDao = new AnnosDao(database);
+        AnnosRaakaaineDao annosRaakaaineDao = new AnnosRaakaaineDao(database);
 
         get("/", (req, res) -> {
             
@@ -68,13 +72,48 @@ public class Main {
         
         post("/annosraakaaine/", (req, res) -> {
             
+            AnnosRaakaaine ohje = new AnnosRaakaaine(null, req.queryParams("ohje"),
+                Integer.parseInt(req.queryParams("jarjestys")), 
+                Integer.parseInt(req.queryParams("smoothie")),
+                Integer.parseInt(req.queryParams("raakaAine")), 
+                req.queryParams("maara"));
             System.out.println("Smoothie: "+req.queryParams("smoothie"));
             System.out.println("Ohje: "+req.queryParams("ohje"));
             System.out.println("Määrä: "+req.queryParams("maara"));
             System.out.println("Raaka-aine: "+req.queryParams("raakaAine"));
             System.out.println("Järjestys: "+req.queryParams("jarjestys"));
             
+            try {
+                annosRaakaaineDao.saveOrUpdate(ohje);
+                
+            } catch (java.lang.RuntimeException e) {
+                res.status(403);
+                res.body("Virheellinen pyyntö! Lisätietoja:"+e.toString());
+                res.redirect("/annos/");
+                return ""; 
+            }
+            
             res.redirect("/annos/");
+            return "";
+            
+        });
+        
+        post("/raakaaine/", (req, res) -> {
+
+            Raakaaine aine = new Raakaaine(null, req.queryParams("nimi"));
+            
+            
+            try {
+                raakaaineDao.saveOrUpdate(aine);
+                
+            } catch (java.lang.RuntimeException e) {
+                res.status(403);
+                res.body("Virheellinen pyyntö! Lisätietoja:"+e.toString());
+                res.redirect("/raakaaine/");
+                return ""; 
+            }
+            
+            res.redirect("/raakaaine/");
             return "";
             
         });
@@ -91,6 +130,6 @@ public class Main {
             map.put("raakaaine_show", raakaaineDao.findOne(Integer.parseInt(req.params("id"))));
 
             return new ModelAndView(map, "raakaaine_show");
-        }, new ThymeleafTemplateEngine());
+        }, new ThymeleafTemplateEngine());        
     }
 }

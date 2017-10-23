@@ -79,27 +79,50 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
     
     @Override
     public Raakaaine saveOrUpdate(Raakaaine aine) throws SQLException {
-        Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("INSERT INTO RaakaAine (nimi) VALUES('?')" );
-        stmt.setObject(1, aine.getNimi());
-
-        ResultSet rs = stmt.executeQuery();
-        boolean hasOne = rs.next();
-        if (!hasOne) {
-            return null;
+        if (aine.getNimi() == null || aine.getNimi().length() <= 0) {
+            throw new java.lang.RuntimeException("Ei voi luoda raaka-ainetta jolla ei ole nimeä!");
         }
-
-        Integer id = rs.getInt("id");
-        String nimi = rs.getString("nimi");
-
-        Raakaaine o = new Raakaaine(id, nimi);
-
-        rs.close();
-        stmt.close();
-        connection.close();
-
-        return o;
+        
+        Raakaaine haettu = findByName(aine.getNimi());
+        
+        if (haettu != null) {
+            return haettu;
+        }
+        
+        Connection conn = database.getConnection();
+        PreparedStatement stmt = conn.prepareStatement("INSERT INTO RaakaAine"
+                + " (nimi)"
+                + " VALUES (?)");
+        stmt.setString(1, aine.getNimi());
+        stmt.executeUpdate();
+          
+        try (ResultSet rs = stmt.getGeneratedKeys()) {
+            if (rs.next()) {
+                Raakaaine a = new Raakaaine(rs.getInt(1), aine.getNimi());
+                stmt.close(); 
+                conn.close();
+                return a;
+            }
+            else {
+                throw new SQLException("Ei saatu avainta!");
+            }
+        }
         
     }
+    
 
+    private Raakaaine findByName(String name) throws SQLException {
+        try (Connection conn = database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Raakaaine WHERE nimi = ?");
+            stmt.setString(1, name);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) {
+                    return null;
+                }
+
+                return new Raakaaine(0, "");
+            }
+        }
+    }
 }

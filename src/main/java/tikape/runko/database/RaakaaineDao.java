@@ -66,6 +66,32 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
 
         return aineet;
     }
+    
+    public List<Raakaaine> findAllWithAnnos(Integer key) throws SQLException {
+        
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT RaakaAine.id,"
+                + "RaakaAine.nimi FROM RaakaAine, Annos, AnnosRaakaAine WHERE"
+                + " Annos.id = ? AND Annos.id = AnnosRaakaAine.annos_id AND"
+                + " AnnosRaakaAine.raakaaine_id = RaakaAine.id");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Raakaaine> aineet = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            aineet.add(new Raakaaine(id, nimi));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return aineet;
+    }
+        
 
     @Override
     public void delete(Integer key) throws SQLException {

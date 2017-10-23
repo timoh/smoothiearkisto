@@ -7,8 +7,22 @@
     </head>
 
     <body>
-        <h1><span th:text="${annos_show.nimi}">annos</span>!</h1>
+        <h1><span th:text="${annos_show.nimi}">annos</span></h1>
+        
+        <h2>Tarvittavat raaka-aineet:</h2>
+        <ul>
+            <li th:each="raaka_aine : ${raaka_aineet}">
+                <span th:text="${raaka_aine.nimi}"> </span>
+            </li>
+            
+        </ul>
 
-        <p>Annos: <span th:text="${annos_show.nimi}">annos</span></p>
+        <h2>Työvaiheet:</h2>
+        
+        <ol>
+            <li th:each="tyovaihe : ${tyovaiheet}">
+                <span th:text="${tyovaihe.ohje}"> </span>
+            </li>
+        </ol>
     </body>
 </html>

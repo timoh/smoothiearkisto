@@ -20,9 +20,10 @@
         <h2>Työvaiheet:</h2>
         
         <ol>
-            <li th:each="tyovaihe : ${tyovaiheet}">
+            <li th:each="tyovaihe : ${tyovaiheet}" th:if="${ tyovaihe.ohje.length() > 0}">
                 <span th:text="${tyovaihe.ohje}"> </span>
             </li>
+            
         </ol>
   
         <ul>

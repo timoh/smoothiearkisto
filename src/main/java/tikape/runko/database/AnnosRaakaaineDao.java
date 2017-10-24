@@ -53,10 +53,11 @@ public class AnnosRaakaaineDao implements Dao<AnnosRaakaaine, Integer> {
 
     // Koska käytännössä halutaan aina hakea ohjeet tietylle annokselle, implementoidaan
     // metodi, jolla haetaan yhtä annosta vastaavat työvaiheet
-    public List<AnnosRaakaaine> findAllwithAnnos(Integer key) throws SQLException {
+    public List<AnnosRaakaaine> findAllWithAnnos(Integer key) throws SQLException {
     
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM AnnosRaakaAine WHERE annos_id = ?");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM AnnosRaakaAine WHERE annos_id = ?"
+                + " ORDER BY jarjestys");
         stmt.setObject(1, key);
 
         ResultSet rs = stmt.executeQuery();

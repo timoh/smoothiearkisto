@@ -7,15 +7,28 @@
     </head>
 
     <body>
-        <h1><span th:text="${annos_show.nimi}">annos</span>!</h1>
-
-        <p>Annos: <span th:text="${annos_show.nimi}">annos</span></p>
+        <h1><span th:text="${annos_show.nimi}">annos</span></h1>
         
+        <h2>Tarvittavat raaka-aineet:</h2>
+        <ul>
+            <li th:each="raaka_aine : ${raaka_aineet}">
+                <span th:text="${raaka_aine.nimi}"> </span>
+            </li>
+            
+        </ul>
+
+        <h2>Työvaiheet:</h2>
+        
+        <ol>
+            <li th:each="tyovaihe : ${tyovaiheet}">
+                <span th:text="${tyovaihe.ohje}"> </span>
+            </li>
+        </ol>
+  
         <ul>
             <li>
               <a href="/">Smoothielistaukseen</a>
             </li>
         </ul>
-        
     </body>
 </html>

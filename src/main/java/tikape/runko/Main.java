@@ -44,8 +44,11 @@ public class Main {
 
         get("/annos/:id", (req, res) -> {
             HashMap map = new HashMap<>();
+            int annosid = Integer.parseInt(req.params("id"));
             
-            map.put("annos_show", annosDao.findOne(Integer.parseInt(req.params("id"))));
+            map.put("annos_show", annosDao.findOne(annosid));
+            map.put("raaka_aineet", raakaaineDao.findAllWithAnnos(annosid));
+            map.put("tyovaiheet", annosRaakaaineDao.findAllWithAnnos(annosid));
 
             return new ModelAndView(map, "annos_show");
         }, new ThymeleafTemplateEngine());

@@ -121,6 +121,24 @@ public class Main {
             
         });
         
+        post("/poista_raakaaine/", (req, res) -> {
+            
+            int raakaaine_id = Integer.parseInt(req.queryParams("raakaAine"));
+            try {
+                if (!annosRaakaaineDao.isRaakaaineUsed(raakaaine_id)) {
+                    raakaaineDao.delete(raakaaine_id);
+                }
+            } catch (java.lang.RuntimeException e) {
+                res.status(403);
+                res.body("Virheellinen pyyntö! Lisätietoja:"+e.toString());
+                res.redirect("/raakaaine/");
+                return ""; 
+            }
+            
+            res.redirect("/raakaaine/");
+            return "";
+        });
+        
         get("/raakaaine/", (req, res) -> {
             HashMap map = new HashMap<>();
             map.put("raakaaine_index", raakaaineDao.findAll());
@@ -130,8 +148,9 @@ public class Main {
 
         get("/raakaaine/:id", (req, res) -> {
             HashMap map = new HashMap<>();
-            map.put("raakaaine_show", raakaaineDao.findOne(Integer.parseInt(req.params("id"))));
-
+            int id = Integer.parseInt(req.params("id"));
+            map.put("raakaaine_show", raakaaineDao.findOne(id));
+            map.put("annokset", annosDao.findAllWithRaakaaine(id));
             return new ModelAndView(map, "raakaaine_show");
         }, new ThymeleafTemplateEngine());        
     }

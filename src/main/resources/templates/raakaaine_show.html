@@ -2,13 +2,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Otsikko</title>
+        <title>Raaka-aine</title>
         <meta charset="utf-8" />
     </head>
 
     <body>
-        <h1><span th:text="${raakaaine_show.nimi}">raaka-aine</span>!</h1>
+        <h1><span th:text="${raakaaine_show.nimi}">raaka-aine</span></h1>
 
-        <p>Raaka-aine: <span th:text="${raakaaine_show.nimi}">raaka-aine</span></p>
+        <h2>Annokset, jotka käyttävät tätä raaka-ainetta</h2>
+        <ul>
+            <li th:each="annos : ${annokset}">
+                <a th:href="${'/annos/' + annos.id}"><span th:text="${annos.nimi}"> </span> </a>
+            </li>
+            
+        </ul>
     </body>
 </html>

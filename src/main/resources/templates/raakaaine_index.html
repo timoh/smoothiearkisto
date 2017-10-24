@@ -2,18 +2,17 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Otsikko</title>
-        <meta charset="utf-8" />
+        <title>Raaka-ainelistaus</title>
     </head>
 
     <body>
         <h1>Raaka-aineet</h1>
 
-        <ol>
+        <ul>
             <li th:each="raakaaine : ${raakaaine_index}">
-                <span th:text="${raakaaine.nimi}">Raakaaine: </span> <a th:href="${'/raakaaine/' + raakaaine.id}">linkki</a>
+                <a th:href="${'/raakaaine/' + raakaaine.id}"><span th:text="${raakaaine.nimi}"></span></a>
             </li>
-        </ol>
+        </ul>
         
         <h2>Lisää uusi raakaaine</h2>
 
@@ -23,6 +22,21 @@
             <input type="submit" value="Lisää"/>
         </form>
         
+        <h2>Poista rakaa-aine</h2>
+        
+        <p>Raaka-aineen voi poistaa ainoastaan, jos se ei ole osana missään reseptissä</p>
+        
+        <form method="POST" action="/poista_raakaaine/">
+            <h3>Poistettava raaka-aine:</h3>
+        
+            <select name="raakaAine">
+                    <option th:each="raakaaine : ${raakaaine_index}" 
+                            th:value="${raakaaine.id}" 
+                            th:text="${raakaaine.nimi}">raaka-aineen nimi</option>
+            </select>
+            <input type="submit" value="Poista"/>
+        </form>
+
         <ul>
             <li>
               <a href="/">Smoothielistaukseen</a>

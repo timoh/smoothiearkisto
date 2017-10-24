@@ -44,7 +44,7 @@ public class AnnosDao implements Dao<Annos, Integer> {
         List<Annos> tulos = new ArrayList<>();
         
         Connection conn = database.getConnection();
-        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Annos");
+        PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Annos ORDER BY nimi");
 
         ResultSet rs = stmt.executeQuery();
 
@@ -61,6 +61,30 @@ public class AnnosDao implements Dao<Annos, Integer> {
         
         return tulos;
     }
+    
+    public List<Annos> findAllWithRaakaaine(Integer key) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT Annos.id,"
+                + "Annos.nimi FROM RaakaAine, Annos, AnnosRaakaAine WHERE"
+                + " RaakaAine.id = ? AND RaakaAine.id = AnnosRaakaAine.raakaaine_id AND"
+                + " AnnosRaakaAine.annos_id = Annos.id");
+        stmt.setObject(1, key);
+
+        ResultSet rs = stmt.executeQuery();
+        List<Annos> annokset = new ArrayList<>();
+        while (rs.next()) {
+            Integer id = rs.getInt("id");
+            String nimi = rs.getString("nimi");
+
+            annokset.add(new Annos(id, nimi));
+        }
+
+        rs.close();
+        stmt.close();
+        connection.close();
+
+        return annokset;
+    }
 
     @Override
     public Annos saveOrUpdate(Annos object) throws SQLException {
@@ -69,6 +93,12 @@ public class AnnosDao implements Dao<Annos, Integer> {
         
         if (object.getNimi() == null || object.getNimi().length() <= 0) {
             throw new java.lang.RuntimeException("Ei voi luoda annosta jolla ei ole nimeä!");
+        }
+        
+        Annos haettu = findByName(object.getNimi());
+        
+        if (haettu != null) {
+            return haettu;
         }
         
         if (object.getId() == null) {
@@ -112,6 +142,21 @@ public class AnnosDao implements Dao<Annos, Integer> {
             }
         }
 
+    }
+    
+    private Annos findByName(String name) throws SQLException {
+        try (Connection conn = database.getConnection()) {
+            PreparedStatement stmt = conn.prepareStatement("SELECT * FROM Annos WHERE nimi = ?");
+            stmt.setString(1, name);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                if (!result.next()) {
+                    return null;
+                }
+
+                return new Annos(0, "");
+            }
+        }
     }
 
     private Annos update(Annos annos) throws SQLException {

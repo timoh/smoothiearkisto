@@ -103,6 +103,27 @@ public class AnnosRaakaaineDao implements Dao<AnnosRaakaaine, Integer> {
         }
     }
     
+    public boolean isRaakaaineUsed(Integer key) throws SQLException {
+        Connection connection = database.getConnection();
+        PreparedStatement stmt = connection.prepareStatement("SELECT COUNT(*) "
+                + "AS maara FROM AnnosRaakaAine WHERE raakaaine_id = ?");
+        stmt.setObject(1, key);
+        
+        ResultSet rs = stmt.executeQuery();
+        
+        if (rs.getInt("maara") == 0) {
+            stmt.close(); 
+            connection.close();
+            return false;
+        }
+        
+        stmt.close(); 
+        connection.close();
+        return true;
+        
+        
+    }
+    
     private AnnosRaakaaine save(AnnosRaakaaine ohje) throws SQLException {
 
         Connection conn = database.getConnection();

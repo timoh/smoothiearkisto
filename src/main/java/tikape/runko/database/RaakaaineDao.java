@@ -49,7 +49,7 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
     public List<Raakaaine> findAll() throws SQLException {
 
         Connection connection = database.getConnection();
-        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine");
+        PreparedStatement stmt = connection.prepareStatement("SELECT * FROM RaakaAine ORDER BY nimi");
 
         ResultSet rs = stmt.executeQuery();
         List<Raakaaine> aineet = new ArrayList<>();
@@ -95,10 +95,13 @@ public class RaakaaineDao implements Dao<Raakaaine, Integer> {
 
     @Override
     public void delete(Integer key) throws SQLException {
+        
         Connection connection = database.getConnection();
         PreparedStatement stmt = connection.prepareStatement("DELETE FROM RaakaAine WHERE id = ?");
+        
         stmt.setObject(1, key);
-        stmt.executeQuery();
+        stmt.executeUpdate();
+        
         stmt.close();
         connection.close();
     }

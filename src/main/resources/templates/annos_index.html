@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
 
     <head>
-        <title>Otsikko</title>
+        <title>Tarkastele ja koosta annoksia</title>
         <meta charset="utf-8" />
     </head>
 
@@ -11,7 +11,7 @@
 
         <ol>
             <li th:each="annos : ${annos_index}">
-                <span th:text="${annos.nimi}">Annos: </span> <a th:href="${'/annos/' + annos.id}">linkki</a>
+                <a th:href="${'/annos/' + annos.id}"><span th:text="${annos.nimi}"></span> </a>
             </li>
         </ol>
         

@@ -1,4 +1,13 @@
-# tikape-runko
+# Smoothiearkisto
+> Tietokantojen perusteet -kurssille palautettava ohjelmointiharjoitus.
 
-Tietokantojen perusteet -kurssilla tehtävän web-sovelluksen pohja.
+## Tekijät
+Kalle & Timo
 
+## Toiminnallisuudet
+
+* Lisää / poista smoothie
+* Lisää / poista aines
+* Linkitä aines smoothieen lisätietojen (järjestys, määrä, ohje) kera
+* Listaa smoothiet ja ainekset
+* Tarkastele missä smoothiessa tiettyä ainesta on käytetty
